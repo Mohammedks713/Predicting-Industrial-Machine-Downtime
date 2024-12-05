@@ -133,7 +133,6 @@ def get_best_params_and_score(model_name, X, y):
         joblib.dump(X_adj, f'outputs/X_{model_name}.pkl')
         joblib.dump(y_adj, f'outputs/y_{model_name}.pkl')
 
-
         opt.fit(X_adj, y_adj)
 
         # Evaluate the best model on all metrics
@@ -141,7 +140,6 @@ def get_best_params_and_score(model_name, X, y):
 
         # save the best model and adjusted tables as needed
         joblib.dump(best_model, f'outputs/Best{model_name}.pkl')
-
 
         # use cross_validate to return metrics for the best model
         cv_results = cross_validate(best_model, X_adj, y_adj, cv = 5, scoring = ('accuracy', 'balanced_accuracy', 'f1'))
@@ -153,6 +151,8 @@ def get_best_params_and_score(model_name, X, y):
             "Best Model Average Test Balanced Accuracy": cv_results["test_balanced_accuracy"].mean(),
             "Best Model Average Test F1-Score": cv_results["test_f1"].mean()
         }
+
+        joblib.dump(metrics, f'outputs/metrics{model_name}.pkl')
 
         # Print results
         for key, value in metrics.items():
@@ -210,7 +210,7 @@ def get_score_diff_machines(model_name, best_model, X, y):
             if "Machine_ID" in X_adj.columns:
                 # transform categorical
                 X_adj["Machine_ID"] = le.fit_transform(X_adj["Machine_ID"])
-                print(dict(zip(le.classes_, le.transform(le.classes_))))
+                # print(dict(zip(le.classes_, le.transform(le.classes_))))
 
         # transform label
         y_adj = le.fit_transform(y)
